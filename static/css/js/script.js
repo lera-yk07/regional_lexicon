@@ -1,0 +1,1 @@
+console.log('Regional Lexicon project loaded');
