@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Главная - Региональная лексика России{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <h1 class="mb-4">Словарь региональной лексики</h1>
+        
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card stat-card bg-primary text-white">
+                    <div class="card-body text-center">
+                        <h2>{{ regions_count }}</h2>
+                        <p class="mb-0">Регионов</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card stat-card bg-success text-white">
+                    <div class="card-body text-center">
+                        <h2>{{ cities_count }}</h2>
+                        <p class="mb-0">Городов</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card stat-card bg-info text-white">
+                    <div class="card-body text-center">
+                        <h2>{{ words_count }}</h2>
+                        <p class="mb-0">Слов</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Поиск и фильтрация</h5>
+            </div>
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-6">
+                        <input type="text" name="search" class="form-control" 
+                               placeholder="Поиск по словам, значениям, городам..." 
+                               value="{{ search_query }}">
+                    </div>
+                    <div class="col-md-4">
+                        <select name="city" class="form-control">
+                            <option value="">Все города</option>
+                            {% for city in all_cities %}
+                                <option value="{{ city.id }}" {% if city_filter == city.id|stringformat:"i" %}selected{% endif %}>
+                                    {{ city.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">Найти</button>
+                    </div>
+                    
+                    <div class="col-12">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="sort" id="sort_new" 
+                                   value="-created_at" {% if sort_by == '-created_at' %}checked{% endif %}>
+                            <label class="form-check-label" for="sort_new">Сначала новые</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="sort" id="sort_popular" 
+                                   value="-views_count" {% if sort_by == '-views_count' %}checked{% endif %}>
+                            <label class="form-check-label" for="sort_popular">Популярные</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="sort" id="sort_alphabet" 
+                                   value="word" {% if sort_by == 'word' %}checked{% endif %}>
+                            <label class="form-check-label" for="sort_alphabet">А-Я</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <h3 class="mb-3">Слова и выражения</h3>
+        
+        {% for word in page_obj %}
+        <div class="card word-card mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-9">
+                        <h5 class="card-title">{{ word.word }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <a href="{% url 'city_detail' word.city.id %}">{{ word.city.name }}</a>
+                        </h6>
+                        <p class="card-text">{{ word.meaning|truncatewords:30 }}</p>
+                        {% if word.example %}
+                        <p class="text-muted"><small>Пример: {{ word.example|truncatewords:10 }}</small></p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3 text-md-end">
+                        <a href="{% url 'word_detail' word.id %}" class="btn btn-outline-primary btn-sm">
+                            Подробнее
+                        </a>
+                        <p class="mt-2 mb-0">
+                            <small class="text-muted">
+                                Просмотров: {{ word.views_count }}<br>
+                                Добавил: {{ word.user.username }}
+                            </small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-info">
+            <p class="mb-0">Слов не найдено. {% if not user.is_authenticated %}Зарегистрируйтесь, чтобы добавить первое слово!{% endif %}</p>
+        </div>
+        {% endfor %}
+
+        {% if page_obj.has_other_pages %}
+        <nav aria-label="Навигация по страницам">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if city_filter %}&city={{ city_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}">
+                        Назад
+                    </a>
+                </li>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if city_filter %}&city={{ city_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}">
+                            {{ num }}
+                        </a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if city_filter %}&city={{ city_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}">
+                        Вперед
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+
+    <div class="col-lg-4">
+        {% if user.is_authenticated %}
+        <div class="card sticky-top" style="top: 20px;">
+            <div class="card-header">
+                <h5 class="mb-0">Добавить новое слово</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary w-100">
+                        Добавить слово
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="card">
+            <div class="card-body text-center">
+                <h5>Хотите добавить слово?</h5>
+                <p>Зарегистрируйтесь, чтобы добавлять региональные слова в наш словарь!</p>
+                <a href="{% url 'register' %}" class="btn btn-primary">Регистрация</a>
+                <a href="{% url 'login' %}" class="btn btn-outline-primary">Войти</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

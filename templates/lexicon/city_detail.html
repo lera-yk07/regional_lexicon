@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ city.name }} - Региональная лексика России{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">Лексика города {{ city.name }}</h1>
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Информация о городе</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Регион:</strong> {{ city.region.name }}</p>
+                        {% if city.population %}
+                        <p><strong>Население:</strong> {{ city.population|floatformat:"0" }} человек</p>
+                        {% endif %}
+                        {% if city.founded_year %}
+                        <p><strong>Год основания:</strong> {{ city.founded_year }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Количество слов в словаре:</strong> {{ city.word_count }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h3 class="mb-3">Слова из {{ city.name }}</h3>
+        
+        {% if words %}
+            {% for word in words %}
+            <div class="card word-card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <h5 class="card-title">{{ word.word }}</h5>
+                            <p class="card-text">{{ word.meaning|truncatewords:30 }}</p>
+                            {% if word.example %}
+                            <p class="text-muted"><small>Пример: {{ word.example|truncatewords:10 }}</small></p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3 text-md-end">
+                            <a href="{% url 'word_detail' word.id %}" class="btn btn-outline-primary btn-sm">
+                                Подробнее
+                            </a>
+                            <p class="mt-2 mb-0">
+                                <small class="text-muted">
+                                    Добавил: {{ word.user.username }}
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+        <div class="alert alert-info">
+            <p class="mb-0">Для этого города пока нет добавленных слов.</p>
+            {% if user.is_authenticated %}
+            <p class="mb-0 mt-2">Станьте первым, кто добавит слово из {{ city.name }}!</p>
+            <a href="{% url 'home' %}" class="btn btn-primary mt-2">Добавить слово</a>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+                ← Вернуться к общему словарю
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

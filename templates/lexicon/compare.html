@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Сравнение городов - Региональная лексика России{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Сравнение региональной лексики</h1>
+
+<div class="card">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-5">
+                <label for="city1" class="form-label">Первый город:</label>
+                <select class="form-select" id="city1" name="city1">
+                    <option value="">Выберите город</option>
+                    {% for city in cities %}
+                    <option value="{{ city.id }}" {% if city1 and city1.id == city.id %}selected{% endif %}>
+                        {{ city.name }} ({{ city.region.name }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-5">
+                <label for="city2" class="form-label">Второй город:</label>
+                <select class="form-select" id="city2" name="city2">
+                    <option value="">Выберите город</option>
+                    {% for city in cities %}
+                    <option value="{{ city.id }}" {% if city2 and city2.id == city.id %}selected{% endif %}>
+                        {{ city.name }} ({{ city.region.name }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Сравнить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if city1 and city2 %}
+<div class="row mt-4">
+    <div class="col-md-12">
+        <h3>Результаты сравнения</h3>
+        <p>Сравнение лексики <strong>{{ city1.name }}</strong> ({{ city1.region.name }}) 
+           и <strong>{{ city2.name }}</strong> ({{ city2.region.name }})</p>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5>Общие слова ({{ common_words|length }})</h5>
+            </div>
+            <div class="card-body">
+                {% if common_words %}
+                <ul class="list-group">
+                    {% for word in common_words %}
+                    <li class="list-group-item">
+                        <strong>{{ word.word }}</strong>: {{ word.meaning|truncatewords:10 }}
+                        <br>
+                        <small class="text-muted">Пример: {{ word.example|truncatewords:5 }}</small>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>Общих слов не найдено.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5>Уникальные для {{ city1.name }} ({{ unique_to_city1|length }})</h5>
+            </div>
+            <div class="card-body">
+                {% if unique_to_city1 %}
+                <ul class="list-group">
+                    {% for word in unique_to_city1 %}
+                    <li class="list-group-item">
+                        <strong>{{ word.word }}</strong>: {{ word.meaning|truncatewords:10 }}
+                        <br>
+                        <small class="text-muted">Пример: {{ word.example|truncatewords:5 }}</small>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>Уникальных слов не найдено.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5>Уникальные для {{ city2.name }} ({{ unique_to_city2|length }})</h5>
+            </div>
+            <div class="card-body">
+                {% if unique_to_city2 %}
+                <ul class="list-group">
+                    {% for word in unique_to_city2 %}
+                    <li class="list-group-item">
+                        <strong>{{ word.word }}</strong>: {{ word.meaning|truncatewords:10 }}
+                        <br>
+                        <small class="text-muted">Пример: {{ word.example|truncatewords:5 }}</small>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>Уникальных слов не найдено.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

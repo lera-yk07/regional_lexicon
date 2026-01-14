@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Статистика - Региональная лексика России{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Статистика региональной лексики</h1>
+
+{% if empty %}
+<div class="alert alert-info">
+    <p>Пока нет данных для отображения статистики.</p>
+</div>
+{% else %}
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">{{ total_words }}</h5>
+                <p class="card-text">Всего слов в базе</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title">{{ total_regions }}</h5>
+                <p class="card-text">Регионов представлено</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body">
+                <h5 class="card-title">{{ total_cities }}</h5>
+                <p class="card-text">Городов представлено</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Самые популярные слова</h5>
+        </div>
+    <div class="card-body">
+        {{ popular_table|safe }}
+     </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h3>Статистика по регионам</h3>
+    </div>
+    <div class="card-body">
+        {{ region_table|safe }}
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h3>Статистика по городам</h3>
+    </div>
+    <div class="card-body">
+        {{ city_table|safe }}
+    </div>
+</div>
+
+{% endif %}
+
+{% endblock %}

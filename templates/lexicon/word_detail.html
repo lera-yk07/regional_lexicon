@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ word.word }} - Региональная лексика России{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">{{ word.word }}</h2>
+                <p class="mb-0">
+                    <small>
+                        Город: <a href="{% url 'city_detail' word.city.id %}" class="text-white">{{ word.city.name }}</a>, 
+                        Регион:{{ word.city.region.name }}
+                    </small>
+                </p>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <h5>Значение:</h5>
+                    <p class="lead">{{ word.meaning }}</p>
+                </div>
+                
+                {% if word.example %}
+                <div class="mb-4">
+                    <h5>Пример использования:</h5>
+                    <div class="alert alert-light border">
+                        <p class="mb-0"><em>"{{ word.example }}"</em></p>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Информация:</h5>
+                        <ul class="list-unstyled">
+                            <li><strong>Добавил:</strong> {{ word.user.username }}</li>
+                            <li><strong>Просмотров:</strong> {{ word.views_count }}</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>География:</h5>
+                        <ul class="list-unstyled">
+                            <li><strong>Город:</strong> {{ word.city.name }}</li>
+                            <li><strong>Регион:</strong> {{ word.city.region.name }}</li>
+                            {% if word.city.population %}
+                            <li><strong>Население города:</strong> {{ word.city.population|floatformat:"0" }} чел.</li>
+                            {% endif %}
+                            {% if word.city.founded_year %}
+                            <li><strong>Год основания:</strong> {{ word.city.founded_year }}</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+                    ← Назад к списку
+                </a>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Другие слова из {{ word.city.name }}</h5>
+            </div>
+            <div class="card-body">
+                {% with similar_words=word.city.words.all|slice:":5" %}
+                    {% if similar_words|length > 1 %}
+                        <div class="list-group">
+                            {% for similar in similar_words %}
+                                {% if similar.id != word.id %}
+                                <a href="{% url 'word_detail' similar.id %}" class="list-group-item list-group-item-action">
+                                    <strong>{{ similar.word }}</strong>
+                                    <p class="mb-0 text-muted">{{ similar.meaning|truncatewords:10 }}</p>
+                                </a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">Нет других слов из этого города</p>
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
