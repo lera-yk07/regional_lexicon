@@ -10,15 +10,7 @@
 * **MySQL** - база данных на хостинге
 * **SQLite** - база данных для разработки
 
-## Скриншоты
-![Главная страница]("C:\Users\Honor\Pictures\Screenshots\main.png")
-*Главная страница с каталогом слов*
 
-![Сравнение городов]("C:\Users\Honor\Pictures\Screenshots\comparison.png")
-*Страница сравнения лексики двух городов*
-
-![Статистика]("C:\Users\Honor\Pictures\Screenshots\comparison.png")
-*Страница статистики с использованием Pandas*
 
 ## Как запустить проект локально
 
