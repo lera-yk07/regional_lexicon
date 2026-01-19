@@ -12,6 +12,8 @@
 
 #Скриншоты
 ![Главная страница с каталогом слов](https://github.com/lera-yk07/regional_lexicon/blob/master/main.png)
+![Страница сравнения лексики двух городов](https://github.com/lera-yk07/regional_lexicon/blob/master/comparison.png)
+![Страница статистики с использованием Pandas](https://github.com/lera-yk07/regional_lexicon/blob/master/statistics.png)
 
 
 
