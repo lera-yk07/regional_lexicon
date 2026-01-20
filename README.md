@@ -24,7 +24,8 @@
 
 ## Как запустить проект локально
 
-1. **Клонируйте репозиторий:**
-```bash
-git clone https://github.com/ваш-юзернейм/regional-lexicon.git
-cd regional-lexicon
+1. git clone https://github.com/ваш-юзернейм/regional-lexicon.git
+2. python -m venv venv
+3. pip install -r requirements.txt
+4. python manage.py migrate
+5. python manage.py runserver
