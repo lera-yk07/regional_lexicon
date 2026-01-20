@@ -20,6 +20,16 @@
 ![Страница сравнения лексики двух городов](https://github.com/lera-yk07/regional_lexicon/blob/master/comparison.png)
 ![Страница статистики с использованием Pandas](https://github.com/lera-yk07/regional_lexicon/blob/master/statistics.png)
 
+## Архитектура проекта ✓
+regional_lexicon/
+├── lexicon/ 
+│ ├── models.py
+│ ├── views.py 
+│ ├── forms.py 
+│ └── urls.py 
+├── templates/ 
+├── static/ 
+└── requirements.txt
 
 
 ## Как запустить проект локально
